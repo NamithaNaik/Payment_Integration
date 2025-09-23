@@ -1,7 +1,7 @@
 import '../core/payment_options.dart';
 
 class StripeOptions implements PaymentOptions {
-  final String publishableKey;
+  final String? publishableKey;
   final int amount; // cents
   final String currency;
   final String customerEmail;
