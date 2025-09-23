@@ -2,13 +2,15 @@ import '../core/payment_options.dart';
 
 class StripeOptions implements PaymentOptions {
   final String? publishableKey;
+  final String? paymentIntentClientSecret;
   final int amount; // cents
   final String currency;
   final String customerEmail;
   final Map<String, dynamic>? extra;
 
   StripeOptions({
-    required this.publishableKey,
+    this.publishableKey,
+    this.paymentIntentClientSecret,
     required this.amount,
     required this.currency,
     required this.customerEmail,
@@ -18,6 +20,7 @@ class StripeOptions implements PaymentOptions {
   Map<String, dynamic> toMap() {
     return {
       'publishableKey': publishableKey,
+      'paymentIntentClientSecret': paymentIntentClientSecret,
       'amount': amount,
       'currency': currency,
       'customerEmail': customerEmail,
