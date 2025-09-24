@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-import '../../src/core/payment_service.dart';
-import '../../src/core/payment_result.dart';
+import 'package:payment_gateway_integration/payment_gateway_integration.dart';
 import 'razorpay_options.dart';
 
 class RazorpayPaymentService implements PaymentService<RazorpayOptions> {

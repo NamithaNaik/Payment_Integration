@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
 
-import '../../src/core/payment_service.dart';
-import '../../src/core/payment_result.dart';
+import 'package:payment_gateway_integration/payment_gateway_integration.dart';
 import 'stripe_options.dart';
 
 class StripePaymentService implements PaymentService<StripeOptions> {

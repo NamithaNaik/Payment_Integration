@@ -1,4 +1,4 @@
-import '../../src/core/payment_options.dart';
+import 'package:payment_gateway_integration/payment_gateway_integration.dart';
 
 class RazorpayOptions implements PaymentOptions {
   final String key;

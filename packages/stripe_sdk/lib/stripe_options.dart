@@ -1,4 +1,4 @@
-import '../core/payment_options.dart';
+import 'package:payment_gateway_integration/payment_gateway_integration.dart';
 
 class StripeOptions implements PaymentOptions {
   final String? publishableKey;
@@ -28,6 +28,3 @@ class StripeOptions implements PaymentOptions {
     };
   }
 }
-
-
-
