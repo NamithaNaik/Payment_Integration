@@ -1,43 +1,35 @@
 import 'dart:async';
-
 import 'package:flutter_stripe/flutter_stripe.dart';
-
-import 'package:payment_gateway_integration/payment_gateway_integration.dart';
 import 'stripe_options.dart';
 
-class StripePaymentService implements PaymentService<StripeOptions> {
+class StripePaymentService {
   bool _initialized = false;
 
-  final _successController = StreamController<PaymentResultSuccess>.broadcast();
-  final _errorController = StreamController<PaymentResultError>.broadcast();
+  final _successController = StreamController<String>.broadcast();
+  final _errorController = StreamController<String>.broadcast();
 
-  Stream<PaymentResultSuccess> get onPaymentSuccess =>
-      _successController.stream;
-  Stream<PaymentResultError> get onPaymentError => _errorController.stream;
+  /// Streams to listen to payment results
+  Stream<String> get onPaymentSuccess => _successController.stream;
+  Stream<String> get onPaymentError => _errorController.stream;
 
-  @override
-  Future<void> initialize() async {
+  /// Initialize Stripe with publishable key (provided by client)
+  Future<void> initialize({required String publishableKey}) async {
     if (_initialized) return;
 
-    // Set your Stripe publishable key (test key for now)
-    Stripe.publishableKey =
-        'pk_test_51SAQTnKKXrceUXmYTrpijx3UBC4QtcJwDvhg9YuhqWjV5kQmKaIJoKpX4nVt7G80CHytJCoNxlLMcXaqgatDVgMP00FE7qftIS'; // replace with your test key
-
-    // Optional: set default merchant country, style, etc.
+    Stripe.publishableKey = publishableKey;
     await Stripe.instance.applySettings();
-
     _initialized = true;
   }
 
-  @override
+  /// Open Stripe Payment Sheet
   Future<void> openCheckout(StripeOptions options) async {
-    if (!_initialized) await initialize();
+    if (!_initialized) {
+      throw Exception("StripePaymentService not initialized. Pass publishableKey first.");
+    }
 
     try {
-      // Correctly get the client secret from the options.
-      // Use the dummy client secret only if one wasn't passed.
-      final clientSecret =
-          options.paymentIntentClientSecret ?? 'pi_demo_client_secret_123';
+      final clientSecret = options.paymentIntentClientSecret ??
+          'pi_demo_client_secret_123'; // demo fallback
 
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -48,15 +40,12 @@ class StripePaymentService implements PaymentService<StripeOptions> {
       );
 
       await Stripe.instance.presentPaymentSheet();
-      _successController.add(
-        PaymentResultSuccess(paymentId: 'stripe_demo_123', orderId: null),
-      );
+      _successController.add('Payment successful: ${clientSecret}');
     } catch (e) {
-      _errorController.add(PaymentResultError(code: 0, message: e.toString()));
+      _errorController.add(e.toString());
     }
   }
 
-  @override
   void dispose() {
     _successController.close();
     _errorController.close();
